@@ -142,9 +142,12 @@
             const regex = /^[0-9]+$/
             if (regex.test(userTile)){
                 console.log(userTile);
+            } else if (userTile < 1 || userTile > 9){
+                userTile = Number(prompt(`Invalid input. Pick a tile 1-9 that hasn't been chosen yet`));
             } else {
                 userTile = Number(prompt(`Invalid input. Pick a tile 1-9 that hasn't been chosen yet`));
             }
+            
             let counter = 0;
             const choices = Players.humanComputerChoices();
             const playerChoice = choices.playerSelection;
