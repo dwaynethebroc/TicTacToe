@@ -117,8 +117,11 @@
         // Check Tie function 
         // Pick tile function
         // Add name
+        // Game Turn function
         // Restart Game function
         // Scoreboard
+
+
     
         pickTileHuman: function(){
             //Ask for user input of a tile to choose
@@ -140,6 +143,9 @@
                         if (Board.gameboardArray[i][j] === "-") {
                             Board.gameboardArray[i][j] = playerChoice;
                             console.table(Board.gameboardArray);
+                            //checkTie and checkWin
+                            //otherwise make human pick another tile
+                            
                         }
                         
                         else if(Board.gameboardArray[i][j] === "X" || "O"){
@@ -149,8 +155,6 @@
                     }
                 }
             }
-
-            Game.pickTileComputer();
         },
 
         pickTileComputer: function() {
@@ -171,6 +175,8 @@
                         if (Board.gameboardArray[i][j] === "-") {
                             Board.gameboardArray[i][j] = computerChoice;
                             console.table(Board.gameboardArray);
+                            //checkTie and checkWin
+                            //otherwise make human pick another tile
                         }
                         
                         else if(Board.gameboardArray[i][j] === "X" || "O"){
@@ -182,13 +188,52 @@
                     }
                 }
             }
-        }
+        },
+
+        checkTie: function(){
+            for(let i = 0; i < Board.gameboardArray.length; i++){
+                for(let j = 0; j < Board.gameboardArray[i].length; j++){
+                    if (Board.gameboardArray[i][j] === `-`) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        },
+
+        checkWin: function(board){
+            
+            //rows
+            for(let i = 0; i < 3; i++){
+                if(board[i][0] !== '-' && board[i][0] === board[i][1] && board[i][1] === board[i][2]){
+                    return alert(`Winner: ${board[i][0]}`);
+                }
+            }
+
+            //columns 
+            for(let j = 0; j < 3; j++) {
+                if(board[0][j] !== '-' && board[0][j] === board[1][j] && board[1][j] === board[2][j]) {
+                    return alert(`Winner: ${board[0][j]}`);
+                }
+            }
+
+            if (board[0][0] !== '-' && board[0][0] === board[1][1] && board[1][1] === board[2][2]){
+                return alert(`Winner: ${board[0][0]}`);
+            }
+
+            if (board[0][2] !== '-' && board[0][2] === board[1][1] && board[1][1] === board[2][0]){
+                return alert(`Winner: ${board[0][2]}`);
+            }
+
+            return false;
+        },
     
     };
 
     Board.init();
     Players.humanComputerChoices();
     Game.pickTileHuman();
+    Game.pickTileComputer();
 }) ()
 
 
