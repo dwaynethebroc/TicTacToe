@@ -121,14 +121,30 @@
         // Restart Game function
         // Scoreboard
 
+        gameTurn: function() {
+            this.pickTileHuman();
+            this.pickTileComputer();
+            let checkTie = this.checkTie();
+            let checkWin = this.checkWin(Board.gameboardArray);
 
+            if (checkTie === false && checkWin === false){
+                this.gameTurn();
+            }
+
+        },
     
-        pickTileHuman: function(){
+        pickTileHuman: function() {
             //Ask for user input of a tile to choose
             //go through array until correct sub-array and position are chosen
             //if selected number has already not been chosen, change "-" to Human's choice
             //else run program again until unselected tile has been chosen
-            const userTile = Number(prompt(`Pick a tile 1-9 that hasn't been chosen yet`));
+            let userTile = Number(prompt(`Pick a tile 1-9 that hasn't been chosen yet`));
+            const regex = /^[0-9]+$/
+            if (regex.test(userTile)){
+                console.log(userTile);
+            } else {
+                userTile = Number(prompt(`Invalid input. Pick a tile 1-9 that hasn't been chosen yet`));
+            }
             let counter = 0;
             const choices = Players.humanComputerChoices();
             const playerChoice = choices.playerSelection;
@@ -149,8 +165,8 @@
                         }
                         
                         else if(Board.gameboardArray[i][j] === "X" || "O"){
-                            console.log(Board.gameboardArray[i][j]);
-                            console.table(Board.gameboardArray);
+                            alert(`Selected tile has already been chosen. Choose another.`)
+                            this.pickTileHuman();
                         }
                     }
                 }
@@ -167,7 +183,9 @@
             let counter = 0; 
             const choices = Players.humanComputerChoices();
             const computerChoice = choices.computerSelection;
+            
             console.log(`Computer's Character = ${computerChoice}`);
+
             for(let i = 0; i < Board.gameboardArray.length; i++){
                 for(let j = 0; j < Board.gameboardArray[i].length; j++){
                     counter++;
@@ -179,9 +197,7 @@
                             //otherwise make human pick another tile
                         }
                         
-                        else if(Board.gameboardArray[i][j] === "X" || "O"){
-                            console.log(Board.gameboardArray[i][j]);
-                            console.table(Board.gameboardArray);
+                        else if(Board.gameboardArray[i][j] === "X" || "O") {
                             Game.pickTileComputer();
                         }
                         
@@ -232,8 +248,7 @@
 
     Board.init();
     Players.humanComputerChoices();
-    Game.pickTileHuman();
-    Game.pickTileComputer();
-}) ()
+    Game.gameTurn();
+})()
 
 
