@@ -94,12 +94,19 @@
             return {playerSelection, computerSelection}; 
         },
     
+        cachedChoices: null,
+
         humanComputerChoices: function(){
-            const choices = Players.selection();
-            console.log(choices);
+            // If choices are already cached, return them
+            if (this.cachedChoices) {
+                return this.cachedChoices;
+            }
     
-            return choices; 
-        }
+            // Otherwise, compute and cache the choices
+            const choices = this.selection();
+            this.cachedChoices = choices;
+            return choices;
+        },
         // Human Player 
         // Computer
     };
@@ -112,29 +119,37 @@
         // Restart Game function
         // Scoreboard
     
-        pickTile: function(){
+        pickTileHuman: function(){
             const userTile = Number(prompt(`Pick a tile 1-9 that hasn't been chosen yet`));
             let counter = 0;
-            const playerChoice = Players.humanComputerChoiceschoices.playerSelection
-            console.log(playerChoice);
+            const choices = Players.humanComputerChoices();
+            const playerChoice = choices.playerSelection;
+            const computerChoice = choices.computerSelection;
+            console.log(`Player's Character = ${playerChoice}`);
+            console.log(`Computer's Character = ${computerChoice}`);
     
             for(let i = 0; i < Board.gameboardArray.length; i++){
                 for(let j = 0; j < Board.gameboardArray[i].length; j++){
                     counter++;
                     if (userTile === counter) {
-                        console.log('match!')
                         Board.gameboardArray[i][j] = playerChoice;
                         console.table(Board.gameboardArray);
                     }
                 }
             }
+
+            Game.pickTileComputer();
+        }
+
+        pickTileComputer: function(){
+            
         }
     
     };
 
     Board.init();
     Players.humanComputerChoices();
-    Game.pickTile();
+    Game.pickTileHuman();
 }) ()
 
 
