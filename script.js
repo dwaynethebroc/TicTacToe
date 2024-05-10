@@ -65,6 +65,9 @@
     
     const Players = {
         // Select X or O coin flip 
+
+        cachedChoices: null,
+
         selection: function() {
             let playerSelection = Number(prompt(`Select heads(1) or tails(2)`));
             let computerSelection = '';
@@ -93,8 +96,6 @@
     
             return {playerSelection, computerSelection}; 
         },
-    
-        cachedChoices: null,
 
         humanComputerChoices: function(){
             // If choices are already cached, return them
@@ -120,29 +121,67 @@
         // Scoreboard
     
         pickTileHuman: function(){
+            //Ask for user input of a tile to choose
+            //go through array until correct sub-array and position are chosen
+            //if selected number has already not been chosen, change "-" to Human's choice
+            //else run program again until unselected tile has been chosen
             const userTile = Number(prompt(`Pick a tile 1-9 that hasn't been chosen yet`));
             let counter = 0;
             const choices = Players.humanComputerChoices();
             const playerChoice = choices.playerSelection;
-            const computerChoice = choices.computerSelection;
             console.log(`Player's Character = ${playerChoice}`);
-            console.log(`Computer's Character = ${computerChoice}`);
     
             for(let i = 0; i < Board.gameboardArray.length; i++){
                 for(let j = 0; j < Board.gameboardArray[i].length; j++){
                     counter++;
                     if (userTile === counter) {
-                        Board.gameboardArray[i][j] = playerChoice;
-                        console.table(Board.gameboardArray);
+                        // Board.gameboardArray[i][j] = playerChoice;
+                        // console.table(Board.gameboardArray);
+                        if (Board.gameboardArray[i][j] === "-") {
+                            Board.gameboardArray[i][j] = playerChoice;
+                            console.table(Board.gameboardArray);
+                        }
+                        
+                        else if(Board.gameboardArray[i][j] === "X" || "O"){
+                            console.log(Board.gameboardArray[i][j]);
+                            console.table(Board.gameboardArray);
+                        }
                     }
                 }
             }
 
             Game.pickTileComputer();
-        }
+        },
 
-        pickTileComputer: function(){
-            
+        pickTileComputer: function() {
+            //select random number 1-9
+            //go through array until correct sub-array and position are chosen
+            //if selected number has already not been chosen, change "-" to computer's player
+            //else run program again until unselected tile has been chosen
+            let computerTile = Math.floor(Math.random() * 9) + 1;
+            console.log(`Computer's choice: ${computerTile}`)
+            let counter = 0; 
+            const choices = Players.humanComputerChoices();
+            const computerChoice = choices.computerSelection;
+            console.log(`Computer's Character = ${computerChoice}`);
+            for(let i = 0; i < Board.gameboardArray.length; i++){
+                for(let j = 0; j < Board.gameboardArray[i].length; j++){
+                    counter++;
+                    if (computerTile === counter) {
+                        if (Board.gameboardArray[i][j] === "-") {
+                            Board.gameboardArray[i][j] = computerChoice;
+                            console.table(Board.gameboardArray);
+                        }
+                        
+                        else if(Board.gameboardArray[i][j] === "X" || "O"){
+                            console.log(Board.gameboardArray[i][j]);
+                            console.table(Board.gameboardArray);
+                            Game.pickTileComputer();
+                        }
+                        
+                    }
+                }
+            }
         }
     
     };
