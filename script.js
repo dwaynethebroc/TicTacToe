@@ -19,7 +19,7 @@
                 }
                 this.gameboardArray.push(a);
             }
-            console.log(this.gameboardArray, this.index);
+            console.table(this.gameboardArray);
     
             return this.gameboardArray;
         },
@@ -32,7 +32,7 @@
                 this.index--;
             }
             
-            console.log(this.gameboardArray, this.index);
+            console.table(this.gameboardArray);
     
             return this.gameboardArray;
         },
@@ -70,6 +70,19 @@
 
         selection: function() {
             let playerSelection = Number(prompt(`Select heads(1) or tails(2)`));
+            const regex = /^[1-2]$/;
+            if (regex.test(playerSelection)){
+                if (playerSelection === 1) {
+                    console.log(`You have selected: Heads`);
+                }
+                else if (playerSelection === 2) {
+                    console.log(`You have selected: Tails`);
+                }
+            } else if (playerSelection < 1 || playerSelection > 9){
+                Players.humanComputerChoices();
+            } else {
+                Players.humanComputerChoices();
+            }
             let computerSelection = '';
             let coin = 0; 
             const x = Math.floor(Math.random() * 100) + 1;
@@ -81,7 +94,6 @@
                 coin = 'tails';
             }
     
-            console.log(x);
             console.log(coin);
     
     
@@ -93,7 +105,7 @@
                 playerSelection = 'O';
                 computerSelection = 'X';
             }
-    
+            
             return {playerSelection, computerSelection}; 
         },
 
@@ -106,6 +118,8 @@
             // Otherwise, compute and cache the choices
             const choices = this.selection();
             this.cachedChoices = choices;
+            console.log(choices);
+            console.table(Board.gameboardArray);
             return choices;
         },
         // Human Player 
@@ -129,6 +143,12 @@
 
             if (checkTie === false && checkWin === false){
                 this.gameTurn();
+            } else if (checkTie === true && checkWin === false) {
+                alert(`It's a tie! Nobody wins. Game will restart now`);
+                Board.clear();
+                Board.init();
+                Players.humanComputerChoices();
+                Game.gameTurn();
             }
 
         },
@@ -138,6 +158,7 @@
             //go through array until correct sub-array and position are chosen
             //if selected number has already not been chosen, change "-" to Human's choice
             //else run program again until unselected tile has been chosen
+            console.table(Board.gameboardArray);
             let userTile = Number(prompt(`Pick a tile 1-9 that hasn't been chosen yet`));
             const regex = /^[0-9]+$/
             if (regex.test(userTile)){
@@ -164,11 +185,11 @@
                             console.table(Board.gameboardArray);
                             //checkTie and checkWin
                             //otherwise make human pick another tile
-                            
                         }
                         
                         else if(Board.gameboardArray[i][j] === "X" || "O"){
                             alert(`Selected tile has already been chosen. Choose another.`)
+                            console.table(Board.gameboardArray);
                             this.pickTileHuman();
                         }
                     }
@@ -181,43 +202,44 @@
             //go through array until correct sub-array and position are chosen
             //if selected number has already not been chosen, change "-" to computer's player
             //else run program again until unselected tile has been chosen
-            let computerTile = Math.floor(Math.random() * 9) + 1;
+            console.table(Board.gameboardArray);
+            let computerTile;
             console.log(`Computer's choice: ${computerTile}`)
             let counter = 0; 
-            const choices = Players.humanComputerChoices();
-            const computerChoice = choices.computerSelection;
-            
-            console.log(`Computer's Character = ${computerChoice}`);
 
-            for(let i = 0; i < Board.gameboardArray.length; i++){
-                for(let j = 0; j < Board.gameboardArray[i].length; j++){
-                    counter++;
-                    if (computerTile === counter) {
-                        if (Board.gameboardArray[i][j] === "-") {
-                            Board.gameboardArray[i][j] = computerChoice;
-                            console.table(Board.gameboardArray);
-                            //checkTie and checkWin
-                            //otherwise make human pick another tile
-                        }
-                        
-                        else if(Board.gameboardArray[i][j] === "X" || "O") {
-                            Game.pickTileComputer();
-                        }
-                        
-                    }
+            do {
+               computerTile = Math.floor(Math.random() * 9) + 1;
+
+               // Convert tile number to corresponding row and column positions
+                let row = Math.floor((computerTile - 1) / 3);
+                let col = (computerTile - 1) % 3;
+
+                if(Board.gameboardArray[row][col] === '-') {
+                    const choices = Players.humanComputerChoices();
+                    const computerChoice = choices.computerSelection;
+                    Board.gameboardArray[row][col] = computerChoice;
+                    console.table(Board.gameboardArray);
+                    break;
                 }
-            }
+
+                counter++;
+
+                if(counter >= 9){
+                    console.log("Board is full. No empty tiles available");
+                    break;
+                }
+            } while(true);
         },
 
-        checkTie: function(){
-            for(let i = 0; i < Board.gameboardArray.length; i++){
+        checkTie: function() {
+            for (let i = 0; i < Board.gameboardArray.length; i++) {
                 for(let j = 0; j < Board.gameboardArray[i].length; j++){
                     if (Board.gameboardArray[i][j] === `-`) {
                         return false;
                     }
                 }
             }
-            return true;
+            return true
         },
 
         checkWin: function(board){
