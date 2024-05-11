@@ -69,8 +69,13 @@
         cachedChoices: null,
 
         selection: function() {
-            let playerSelection = Number(prompt(`Select heads(1) or tails(2)`));
             const regex = /^[1-2]$/;
+            let playerSelection = Number(prompt(`Select heads(1) or tails(2)`)); 
+
+            while (regex.test(!playerSelection)){
+                playerSelection = Number(prompt(`Select heads(1) or tails(2)`));
+            }
+            
             if (regex.test(playerSelection)){
                 if (playerSelection === 1) {
                     console.log(`You have selected: Heads`);
@@ -78,10 +83,6 @@
                 else if (playerSelection === 2) {
                     console.log(`You have selected: Tails`);
                 }
-            } else if (playerSelection < 1 || playerSelection > 9){
-                Players.humanComputerChoices();
-            } else {
-                Players.humanComputerChoices();
             }
             let computerSelection = '';
             let coin = 0; 
@@ -97,11 +98,11 @@
             console.log(coin);
     
     
-            if(coin === 'heads' && playerSelection === 1 || coin === 'heads' && playerSelection === 2) {
+            if(coin === 'heads' && playerSelection === 1 || playerSelection === 2 && coin === 'tails') {
                 playerSelection = 'X';
                 computerSelection = 'O';
             }
-            else if(coin === 'tails' && playerSelection === 1 || coin === 'tails' && playerSelection === 2) {
+            else if(coin === 'tails' && playerSelection === 2 || playerSelection === 1 && coin ==='heads') {
                 playerSelection = 'O';
                 computerSelection = 'X';
             }
@@ -147,6 +148,7 @@
                 alert(`It's a tie! Nobody wins. Game will restart now`);
                 Board.clear();
                 Board.init();
+                Players.selection();
                 Players.humanComputerChoices();
                 Game.gameTurn();
             }
@@ -160,13 +162,13 @@
             //else run program again until unselected tile has been chosen
             console.table(Board.gameboardArray);
             let userTile = Number(prompt(`Pick a tile 1-9 that hasn't been chosen yet`));
-            const regex = /^[0-9]+$/
+            const regex = /^[0-9]+$/;
+
+            while(regex.test(!userTile) || userTile < 1 || userTile > 9){
+                userTile = Number(prompt(`Pick a tile 1-9 that hasn't been chosen yet`));
+            }
             if (regex.test(userTile)){
                 console.log(userTile);
-            } else if (userTile < 1 || userTile > 9){
-                userTile = Number(prompt(`Invalid input. Pick a tile 1-9 that hasn't been chosen yet`));
-            } else {
-                userTile = Number(prompt(`Invalid input. Pick a tile 1-9 that hasn't been chosen yet`));
             }
             
             let counter = 0;
@@ -204,7 +206,6 @@
             //else run program again until unselected tile has been chosen
             console.table(Board.gameboardArray);
             let computerTile;
-            console.log(`Computer's choice: ${computerTile}`)
             let counter = 0; 
 
             do {
@@ -217,6 +218,7 @@
                 if(Board.gameboardArray[row][col] === '-') {
                     const choices = Players.humanComputerChoices();
                     const computerChoice = choices.computerSelection;
+                    console.log(`Computer's choice: ${computerTile}`)
                     Board.gameboardArray[row][col] = computerChoice;
                     console.table(Board.gameboardArray);
                     break;
@@ -239,7 +241,7 @@
                     }
                 }
             }
-            return true
+            return true;
         },
 
         checkWin: function(board){
@@ -271,6 +273,7 @@
     
     };
 
+    Board.clear();
     Board.init();
     Players.humanComputerChoices();
     Game.gameTurn();
