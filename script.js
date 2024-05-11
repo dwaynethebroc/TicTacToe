@@ -97,11 +97,11 @@
                 coin = 'tails';
             }
     
-            if((coin === 'heads' && playerSelection === 1) || (playerSelection === 2 && coin === 'tails')) {
+            if((coin === 'heads' && playerSelection === 1) || (playerSelection === 1 && coin === 'tails')) {
                 playerSelection = 'X';
                 computerSelection = 'O';
             }
-            else if((coin === 'tails' && playerSelection === 1) || (playerSelection === 2 && coin ==='heads')) {
+            else if((coin === 'tails' && playerSelection === 2) || (playerSelection === 2 && coin ==='heads')) {
                 playerSelection = 'O';
                 computerSelection = 'X';
             }
