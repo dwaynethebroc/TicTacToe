@@ -144,15 +144,11 @@
             if (checkTie === false && checkWin === false){
                 this.gameTurn();
             } else if (checkTie === true && checkWin === false) {
-                alert(`It's a tie! Nobody wins. Game will restart now`);
-
-                Board.clear();
-                Board.init();
-                Players.selection();
-                Players.humanComputerChoices();
-                Game.gameTurn();
+                alert(`It's a tie! Nobody wins.`);
+                this.restart();
+            } else if (checkTie === false && checkWin ===true){
+                this.restart();
             }
-
         },
     
         pickTileHuman: function() {
@@ -251,26 +247,54 @@
             //rows
             for(let i = 0; i < 3; i++){
                 if(board[i][0] !== '-' && board[i][0] === board[i][1] && board[i][1] === board[i][2]){
-                    return alert(`Winner: ${board[i][0]}`);
+                    alert(`Winner: ${board[i][0]}`);
+                    return true;
                 }
             }
 
             //columns 
             for(let j = 0; j < 3; j++) {
                 if(board[0][j] !== '-' && board[0][j] === board[1][j] && board[1][j] === board[2][j]) {
-                    return alert(`Winner: ${board[0][j]}`);
+                    alert(`Winner: ${board[0][j]}`);
+                    return true;
                 }
             }
 
             if (board[0][0] !== '-' && board[0][0] === board[1][1] && board[1][1] === board[2][2]){
-                return alert(`Winner: ${board[0][0]}`);
+                    alert(`Winner: ${board[0][0]}`);
+                    return true;
             }
 
             if (board[0][2] !== '-' && board[0][2] === board[1][1] && board[1][1] === board[2][0]){
-                return alert(`Winner: ${board[0][2]}`);
+                    alert(`Winner: ${board[0][2]}`);
+                    return true;
             }
 
             return false;
+        },
+
+        restart: function(){
+            let restart = Number(prompt(`Would you like to play again? \n 1: Yes \n 2: No`));
+            const regex = /^[1-2]$/;
+            let result = regex.test(restart);
+
+            while (!result) {
+                restart = Number(prompt(`Would you like to play again? \n 1: Yes \n 2: No`));
+                result = regex.test(restart);
+            }
+
+            if(restart === 1) {
+                alert(`Ok! Game is restarting now!`)
+
+                Board.clear();
+                Board.init();
+                Players.selection();
+                Players.humanComputerChoices();
+                Game.gameTurn();
+
+            } else if (restart === 2){
+                alert(`Got it! Thanks for playing!`);
+            }
         },
     
     };
