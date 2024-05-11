@@ -71,9 +71,11 @@
         selection: function() {
             const regex = /^[1-2]$/;
             let playerSelection = Number(prompt(`Select heads(1) or tails(2)`)); 
+            let result = regex.test(playerSelection);
 
-            while (regex.test(!playerSelection)){
+            while (!result){
                 playerSelection = Number(prompt(`Select heads(1) or tails(2)`));
+                result = regex.test(playerSelection);
             }
             
             if (regex.test(playerSelection)){
@@ -95,14 +97,11 @@
                 coin = 'tails';
             }
     
-            console.log(coin);
-    
-    
-            if(coin === 'heads' && playerSelection === 1 || playerSelection === 2 && coin === 'tails') {
+            if((coin === 'heads' && playerSelection === 1) || (playerSelection === 2 && coin === 'tails')) {
                 playerSelection = 'X';
                 computerSelection = 'O';
             }
-            else if(coin === 'tails' && playerSelection === 2 || playerSelection === 1 && coin ==='heads') {
+            else if((coin === 'tails' && playerSelection === 1) || (playerSelection === 2 && coin ==='heads')) {
                 playerSelection = 'O';
                 computerSelection = 'X';
             }
@@ -146,6 +145,7 @@
                 this.gameTurn();
             } else if (checkTie === true && checkWin === false) {
                 alert(`It's a tie! Nobody wins. Game will restart now`);
+
                 Board.clear();
                 Board.init();
                 Players.selection();
@@ -163,9 +163,11 @@
             console.table(Board.gameboardArray);
             let userTile = Number(prompt(`Pick a tile 1-9 that hasn't been chosen yet`));
             const regex = /^[0-9]+$/;
+            let result = regex.test(userTile);
 
-            while(regex.test(!userTile) || userTile < 1 || userTile > 9){
+            while(!result || userTile < 1 || userTile > 9){
                 userTile = Number(prompt(`Pick a tile 1-9 that hasn't been chosen yet`));
+                result = regex.test(userTile);
             }
             if (regex.test(userTile)){
                 console.log(userTile);
