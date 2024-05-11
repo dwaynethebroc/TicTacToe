@@ -36,31 +36,6 @@
     
             return this.gameboardArray;
         },
-    
-        display: function() {
-            let boardDiv = document.getElementById('board');
-    
-            this.gameboardArray.forEach(function(ticTac, index) {
-    
-                let ticOrTac = ticTac;
-    
-                let tile = document.createElement("div");
-                tile.classList.add("tile");
-                tile.innerText = `${ticOrTac}`
-    
-                tile.addEventListener('click', Board.changeTile)
-    
-                boardDiv.append(tile);
-            })
-        },
-    
-        changeTile: function() {
-            if (this.innerText === '-') {
-                console.log(playerSelection);
-                this.innerText = `${Players.selection.playerSelection}`
-            }
-        },
-    
     };
     
     const Players = {
@@ -299,9 +274,36 @@
     
     };
 
+    const DOM = {
+        display: function() {
+            let boardDiv = document.getElementById('board');
+    
+            Board.gameboardArray.forEach(function(ticTac, index) {
+    
+                let ticOrTac = ticTac;
+    
+                let tile = document.createElement("div");
+                tile.classList.add("tile");
+                tile.innerText = `${ticOrTac}`
+    
+                tile.addEventListener('click', DOM.changeTile)
+    
+                boardDiv.append(tile);
+            })
+        },
+    
+        changeTile: function() {
+            if (this.innerText === '-') {
+                console.log(playerSelection);
+                this.innerText = `${Players.selection.playerSelection}`
+            }
+        },
+    };
+
     Board.clear();
     Board.init();
     Players.humanComputerChoices();
+    DOM.display();
     Game.gameTurn();
 })()
 
