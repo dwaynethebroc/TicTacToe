@@ -276,23 +276,43 @@
 
     const DOM = {
         display: function() {
+            //create display of array 
             let boardDiv = document.getElementById('board');
+
+            for(let i = 0; i < Board.gameboardArray.length; i++){
+
+                let row = document.createElement("div");
+                row.classList.add("row");
+
+                for(let j = 0; j<Board.gameboardArray[i].length; j++){
+                    let tile = document.createElement("div");
+                    tile.classList.add("tile");
+                    tile.innerText = `${Board.gameboardArray[i][j]}`
+
+                    tile.addEventListener('click', DOM.changeTile())
+                    
+                    row.append(tile);
+                }
+                
+                boardDiv.append(row);
+            }
     
-            Board.gameboardArray.forEach(function(ticTac, index) {
+            // Board.gameboardArray.forEach(function(ticTac) {
     
-                let ticOrTac = ticTac;
+            //     let ticOrTac = ticTac;
     
-                let tile = document.createElement("div");
-                tile.classList.add("tile");
-                tile.innerText = `${ticOrTac}`
+            //     let tile = document.createElement("div");
+            //     tile.classList.add("tile");
+            //     tile.innerText = `${ticOrTac}`
     
-                tile.addEventListener('click', DOM.changeTile)
+            //     tile.addEventListener('click', DOM.changeTile())
     
-                boardDiv.append(tile);
-            })
+            //     boardDiv.append(tile);
+            // })
         },
     
         changeTile: function() {
+            //when Player or Computer makes a selection, update Tile
             if (this.innerText === '-') {
                 console.log(playerSelection);
                 this.innerText = `${Players.selection.playerSelection}`
@@ -304,7 +324,7 @@
     Board.init();
     Players.humanComputerChoices();
     DOM.display();
-    Game.gameTurn();
+    //Game.gameTurn();
 })()
 
 
