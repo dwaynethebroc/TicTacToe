@@ -19,6 +19,17 @@
                 }
                 this.gameboardArray.push(a);
             }
+
+            let resetDiv = document.getElementById("reset");
+            resetDiv.innerText = '';
+            let resetButt = document.createElement("input");
+            resetButt.type = "button";
+            resetButt.value = "Reset";
+            resetButt.id = "reset";
+
+            resetButt.addEventListener('click', Game.restart)
+
+            resetDiv.appendChild(resetButt);
             console.table(this.gameboardArray);
     
             return this.gameboardArray;
@@ -120,11 +131,11 @@
 
             } else if (checkTie === true && checkWin === false) {
                 DOM.createMessage(`It's a tie! Nobody wins.`);
-                this.restart();
+                this.restart;
 
             } else if (checkTie === false && checkWin ===true){
                 DOM.createMessage(`Winner: ${computerChoice}`)
-                this.restart();
+                this.restart;
             }
         },
     
@@ -156,11 +167,11 @@
 
                 } else if (checkTie === true && checkWin === false) {
                     DOM.createMessage(`It's a tie! Nobody wins.`);
-                    this.restart();
+                    this.restart;
 
                 } else if (checkTie === false && checkWin === true){
                     DOM.createMessage(`Winner: ${playerChoice}`)
-                    this.restart();
+                    this.restart;
                 }
             }
 
@@ -207,10 +218,10 @@
 
             if (this.checkWin(Board.gameboardArray)) {
                 // DOM.createMessage(`Winner: ${computerChoice}`);
-                this.restart();
+                this.restart;
             } else if (this.checkTie()) {
                 DOM.createMessage(`It's a tie! Nobody wins.`);
-                this.restart();
+                this.restart;
             }
         },
 
@@ -264,8 +275,8 @@
             return false;
         },
 
-        restart: function(){
-            let restart = Number(prompt(`Would you like to play again? \n 1: Yes \n 2: No`));
+        restart: function(defaultYes) {
+            let restart = defaultYes || Number(prompt(`Would you like to play again? \n 1: Yes \n 2: No`));
             const regex = /^[1-2]$/;
             let result = regex.test(restart);
 
