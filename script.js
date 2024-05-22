@@ -111,13 +111,15 @@
         // Scoreboard
 
         gameTurn: function() {
-            this.pickTileHuman();
+            DOM.updateBoard();
+            
             this.pickTileComputer();
             let checkTie = this.checkTie();
             let checkWin = this.checkWin(Board.gameboardArray);
 
             if (checkTie === false && checkWin === false){
-                this.gameTurn();
+                return true;
+
             } else if (checkTie === true && checkWin === false) {
                 alert(`It's a tie! Nobody wins.`);
                 this.restart();
@@ -127,49 +129,37 @@
         },
     
         pickTileHuman: function() {
-            //Ask for user input of a tile to choose
+            //User clicks on a tile on the gameboard
             //go through array until correct sub-array and position are chosen
             //if selected number has already not been chosen, change "-" to Human's choice
             //else run program again until unselected tile has been chosen
-            console.table(Board.gameboardArray);
-            let userTile = Number(prompt(`Pick a tile 1-9 that hasn't been chosen yet`));
-            const regex = /^[0-9]+$/;
-            let result = regex.test(userTile);
+            const triggeredDiv = event.target;
+            const row = parseInt(triggeredDiv.dataset.row);
+            const col = parseInt(triggeredDiv.dataset.col);
 
-            while(!result || userTile < 1 || userTile > 9){
-                userTile = Number(prompt(`Pick a tile 1-9 that hasn't been chosen yet`));
-                result = regex.test(userTile);
-            }
-            if (regex.test(userTile)){
-                console.log(userTile);
-            }
-            
-            let counter = 0;
             const choices = Players.humanComputerChoices();
             const playerChoice = choices.playerSelection;
             console.log(`Player's Character = ${playerChoice}`);
-    
-            for(let i = 0; i < Board.gameboardArray.length; i++){
-                for(let j = 0; j < Board.gameboardArray[i].length; j++){
-                    counter++;
-                    if (userTile === counter) {
-                        // Board.gameboardArray[i][j] = playerChoice;
-                        // console.table(Board.gameboardArray);
-                        if (Board.gameboardArray[i][j] === "-") {
-                            Board.gameboardArray[i][j] = playerChoice;
-                            console.table(Board.gameboardArray);
-                            //checkTie and checkWin
-                            //otherwise make human pick another tile
-                        }
-                        
-                        else if(Board.gameboardArray[i][j] === "X" || "O"){
-                            alert(`Selected tile has already been chosen. Choose another.`)
-                            console.table(Board.gameboardArray);
-                            this.pickTileHuman();
-                        }
-                    }
+
+            if(Board.gameboardArray[row][col] === '-') {
+                DOM.changeTileHuman(row, col);
+                DOM.updateBoard();
+
+                if (this.checkWin(Board.gameboardArray)) {
+                    // alert(`Winner: ${playerChoice}`);
+                    this.restart();
+                } else if (this.checkTie()) {
+                    alert(`It's a tie! Nobody wins.`);
+                    this.restart();
+                } else {
+                    this.gameTurn(); // Let the computer make its move
                 }
             }
+
+            else {
+                alert(`Selected tile has already been chosen. Choose another.`);
+            }
+
         },
 
         pickTileComputer: function() {
@@ -189,11 +179,11 @@
                 let col = (computerTile - 1) % 3;
 
                 if(Board.gameboardArray[row][col] === '-') {
-                    const choices = Players.humanComputerChoices();
-                    const computerChoice = choices.computerSelection;
-                    console.log(`Computer's choice: ${computerTile}`)
-                    Board.gameboardArray[row][col] = computerChoice;
-                    console.table(Board.gameboardArray);
+                    // console.log(`Computer's choice: ${computerTile}`);
+                    // Board.gameboardArray[row][col] = computerChoice;
+                    // console.table(Board.gameboardArray);
+
+                    DOM.changeTileComputer(row, col);
                     break;
                 }
 
@@ -204,6 +194,14 @@
                     break;
                 }
             } while(true);
+
+            if (this.checkWin(Board.gameboardArray)) {
+                // alert(`Winner: ${computerChoice}`);
+                this.restart();
+            } else if (this.checkTie()) {
+                alert(`It's a tie! Nobody wins.`);
+                this.restart();
+            }
         },
 
         checkTie: function() {
@@ -222,7 +220,9 @@
             //rows
             for(let i = 0; i < 3; i++){
                 if(board[i][0] !== '-' && board[i][0] === board[i][1] && board[i][1] === board[i][2]){
+                    DOM.updateBoard();
                     alert(`Winner: ${board[i][0]}`);
+                    console.log("rowsWin");
                     return true;
                 }
             }
@@ -230,17 +230,23 @@
             //columns 
             for(let j = 0; j < 3; j++) {
                 if(board[0][j] !== '-' && board[0][j] === board[1][j] && board[1][j] === board[2][j]) {
+                    DOM.updateBoard();
                     alert(`Winner: ${board[0][j]}`);
+                    console.log("colsWin");
                     return true;
                 }
             }
 
             if (board[0][0] !== '-' && board[0][0] === board[1][1] && board[1][1] === board[2][2]){
+                    DOM.updateBoard();
+                    console.log("diags1Win");
                     alert(`Winner: ${board[0][0]}`);
                     return true;
             }
 
             if (board[0][2] !== '-' && board[0][2] === board[1][1] && board[1][1] === board[2][0]){
+                    DOM.updateBoard();
+                    console.log("diags2Win")
                     alert(`Winner: ${board[0][2]}`);
                     return true;
             }
@@ -265,7 +271,6 @@
                 Board.init();
                 Players.selection();
                 Players.humanComputerChoices();
-                Game.gameTurn();
 
             } else if (restart === 2){
                 alert(`Got it! Thanks for playing!`);
@@ -284,39 +289,59 @@
                 let row = document.createElement("div");
                 row.classList.add("row");
 
-                for(let j = 0; j<Board.gameboardArray[i].length; j++){
+                for(let j = 0; j < Board.gameboardArray[i].length; j++){
                     let tile = document.createElement("div");
                     tile.classList.add("tile");
-                    tile.innerText = `${Board.gameboardArray[i][j]}`
+                    tile.innerText = `${Board.gameboardArray[i][j]}`;
 
-                    tile.addEventListener('click', DOM.changeTile())
+                    tile.dataset.row = i;
+                    tile.dataset.col = j;
+
+                    tile.addEventListener('click', Game.pickTileHuman.bind(Game));
                     
                     row.append(tile);
                 }
                 
                 boardDiv.append(row);
             }
-    
-            // Board.gameboardArray.forEach(function(ticTac) {
-    
-            //     let ticOrTac = ticTac;
-    
-            //     let tile = document.createElement("div");
-            //     tile.classList.add("tile");
-            //     tile.innerText = `${ticOrTac}`
-    
-            //     tile.addEventListener('click', DOM.changeTile())
-    
-            //     boardDiv.append(tile);
-            // })
+        },
+
+        updateBoard: function() {
+
+            let boardDiv = document.getElementById('board');
+            const tiles = boardDiv.getElementsByClassName('tile');
+
+            for (let tile of tiles) {
+                let row = tile.dataset.row;
+                let col = tile.dataset.col;
+
+                tile.innerText = Board.gameboardArray[row][col];
+            }
+
         },
     
-        changeTile: function() {
-            //when Player or Computer makes a selection, update Tile
-            if (this.innerText === '-') {
-                console.log(playerSelection);
-                this.innerText = `${Players.selection.playerSelection}`
-            }
+        changeTileHuman: function(row, col) {
+            //if player triggers this, change tile to players choice
+            //if computer triggers this, change tile to computers choice
+            const choices = Players.humanComputerChoices();
+            const humanChoice = choices.playerSelection;
+
+            Board.gameboardArray[row][col] = humanChoice;
+            DOM.updateBoard();
+
+            console.table(Board.gameboardArray);
+            
+        },
+
+        changeTileComputer: function(row, col) {
+            //if player triggers this, change tile to players choice
+            //if computer triggers this, change tile to computers choice
+            const choices = Players.humanComputerChoices();
+            const computerChoice = choices.computerSelection;
+
+            Board.gameboardArray[row][col] = computerChoice;
+            DOM.updateBoard();
+            console.table(Board.gameboardArray);
         },
     };
 
@@ -324,7 +349,6 @@
     Board.init();
     Players.humanComputerChoices();
     DOM.display();
-    //Game.gameTurn();
 })()
 
 
