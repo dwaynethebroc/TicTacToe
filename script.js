@@ -62,15 +62,8 @@
                 }
             }
             let computerSelection = '';
-            let coin = 0; 
-            const x = Math.floor(Math.random() * 100) + 1;
-    
-            if(x >= 51) {
-                coin = 'heads';
-            }
-            else if(x <= 50) {
-                coin = 'tails';
-            }
+            let coin = Math.random() >= 0.5 ? 'heads' : 'tails';
+
     
             if((coin === 'heads' && playerSelection === 1) || (playerSelection === 1 && coin === 'tails')) {
                 playerSelection = 'X';
@@ -148,6 +141,9 @@
             const playerChoice = choices.playerSelection;
             console.log(`Player's Character = ${playerChoice}`);
 
+            DOM.updateBoard();
+            console.table(Board.gameboardArray);
+
             if(Board.gameboardArray[row][col] === '-') {
                 DOM.changeTileHuman(row, col);
                 DOM.updateBoard();
@@ -182,6 +178,8 @@
             console.table(Board.gameboardArray);
             let computerTile;
             let counter = 0; 
+
+            DOM.updateBoard();
 
             do {
                computerTile = Math.floor(Math.random() * 9) + 1;
@@ -281,6 +279,7 @@
 
                 Board.clear();
                 Board.init();
+                Players.cachedChoices = null; 
                 Players.selection();
                 Players.humanComputerChoices();
 
@@ -302,6 +301,8 @@
         display: function() {
             //create display of array 
             let boardDiv = document.getElementById('board');
+            boardDiv.innerHTML = ''; // Clear existing board
+
 
             for(let i = 0; i < Board.gameboardArray.length; i++){
 
@@ -317,7 +318,7 @@
                     tile.dataset.col = j;
 
                     tile.addEventListener('click', Game.pickTileHuman.bind(Game));
-                    
+
                     row.append(tile);
                 }
                 
@@ -347,9 +348,7 @@
 
             Board.gameboardArray[row][col] = humanChoice;
             DOM.updateBoard();
-
             console.table(Board.gameboardArray);
-            
         },
 
         changeTileComputer: function(row, col) {
