@@ -81,6 +81,7 @@
                 computerSelection = 'X';
             }
             
+            DOM.createMessage(`Player selection: ${playerSelection} \n Computer selection: ${computerSelection}`)
             return {playerSelection, computerSelection}; 
         },
 
@@ -117,13 +118,19 @@
             let checkTie = this.checkTie();
             let checkWin = this.checkWin(Board.gameboardArray);
 
+            const choices = Players.humanComputerChoices();
+            let computerChoice = choices.computerSelection;
+
+
             if (checkTie === false && checkWin === false){
                 return true;
 
             } else if (checkTie === true && checkWin === false) {
-                alert(`It's a tie! Nobody wins.`);
+                DOM.createMessage(`It's a tie! Nobody wins.`);
                 this.restart();
+
             } else if (checkTie === false && checkWin ===true){
+                DOM.createMessage(`Winner: ${computerChoice}`)
                 this.restart();
             }
         },
@@ -145,19 +152,24 @@
                 DOM.changeTileHuman(row, col);
                 DOM.updateBoard();
 
-                if (this.checkWin(Board.gameboardArray)) {
-                    // alert(`Winner: ${playerChoice}`);
+                let checkTie = this.checkTie();
+                let checkWin = this.checkWin(Board.gameboardArray);
+
+                if (checkTie === false && checkWin === false){
+                    Game.gameTurn();
+
+                } else if (checkTie === true && checkWin === false) {
+                    DOM.createMessage(`It's a tie! Nobody wins.`);
                     this.restart();
-                } else if (this.checkTie()) {
-                    alert(`It's a tie! Nobody wins.`);
+
+                } else if (checkTie === false && checkWin === true){
+                    DOM.createMessage(`Winner: ${playerChoice}`)
                     this.restart();
-                } else {
-                    this.gameTurn(); // Let the computer make its move
                 }
             }
 
             else {
-                alert(`Selected tile has already been chosen. Choose another.`);
+                DOM.createMessage(`Selected tile has already been chosen. Choose another.`);
             }
 
         },
@@ -196,10 +208,10 @@
             } while(true);
 
             if (this.checkWin(Board.gameboardArray)) {
-                // alert(`Winner: ${computerChoice}`);
+                // DOM.createMessage(`Winner: ${computerChoice}`);
                 this.restart();
             } else if (this.checkTie()) {
-                alert(`It's a tie! Nobody wins.`);
+                DOM.createMessage(`It's a tie! Nobody wins.`);
                 this.restart();
             }
         },
@@ -216,12 +228,15 @@
         },
 
         checkWin: function(board){
+
+            let choices = Players.humanComputerChoices;
+            let player = choices.playerSelection;
+            let computer = choices.computerSelection;
             
             //rows
             for(let i = 0; i < 3; i++){
                 if(board[i][0] !== '-' && board[i][0] === board[i][1] && board[i][1] === board[i][2]){
                     DOM.updateBoard();
-                    alert(`Winner: ${board[i][0]}`);
                     console.log("rowsWin");
                     return true;
                 }
@@ -231,7 +246,6 @@
             for(let j = 0; j < 3; j++) {
                 if(board[0][j] !== '-' && board[0][j] === board[1][j] && board[1][j] === board[2][j]) {
                     DOM.updateBoard();
-                    alert(`Winner: ${board[0][j]}`);
                     console.log("colsWin");
                     return true;
                 }
@@ -240,14 +254,12 @@
             if (board[0][0] !== '-' && board[0][0] === board[1][1] && board[1][1] === board[2][2]){
                     DOM.updateBoard();
                     console.log("diags1Win");
-                    alert(`Winner: ${board[0][0]}`);
                     return true;
             }
 
             if (board[0][2] !== '-' && board[0][2] === board[1][1] && board[1][1] === board[2][0]){
                     DOM.updateBoard();
                     console.log("diags2Win")
-                    alert(`Winner: ${board[0][2]}`);
                     return true;
             }
 
@@ -265,7 +277,7 @@
             }
 
             if(restart === 1) {
-                alert(`Ok! Game is restarting now!`)
+                DOM.createMessage(`Ok! Game is restarting now!`)
 
                 Board.clear();
                 Board.init();
@@ -273,13 +285,20 @@
                 Players.humanComputerChoices();
 
             } else if (restart === 2){
-                alert(`Got it! Thanks for playing!`);
+                DOM.createMessage(`Got it! Thanks for playing!`);
             }
         },
     
     };
 
     const DOM = {
+
+        createMessage: function(message) {
+            let notice = document.getElementById("announcements");
+            notice.innerText = ``
+            notice.innerText = `${message}`
+        },
+
         display: function() {
             //create display of array 
             let boardDiv = document.getElementById('board');
