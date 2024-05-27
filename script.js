@@ -10,10 +10,10 @@
     
         //Create initial board
         init: function() {
-            for(let i = 1; i <= 3; i++) {
+            for(let i = 0; i < 3; i++) {
                 let a = [];
     
-                for(let j = 1; j<= 3; j++) {
+                for(let j = 0; j< 3; j++) {
                     a.push("-")
                     this.index++;
                 }
@@ -26,9 +26,7 @@
             resetButt.type = "button";
             resetButt.value = "Reset";
             resetButt.id = "reset";
-
             resetButt.addEventListener('click', Game.restart)
-
             resetDiv.appendChild(resetButt);
             console.table(this.gameboardArray);
     
@@ -38,13 +36,9 @@
         //clear board function
         clear: function() {
     
-            while(this.gameboardArray.length > 0){
-                this.gameboardArray.pop();
-                this.index--;
-            }
-            
+            this.gameboardArray = [];
+            this.index = 0;
             console.table(this.gameboardArray);
-    
             return this.gameboardArray;
         },
     };
@@ -59,17 +53,18 @@
             let coin = Math.random() >= 0.5 ? 'heads' : 'tails';
 
     
-            if((coin === 'heads' && playerSelection === 'heads') || (playerSelection === 'heads' && coin === 'tails')) {
+            if((coin === 'heads' && playerSelection === 'heads') || ( coin === 'tails' && playerSelection === 'heads')) {
                 playerSelection = 'X';
                 computerSelection = 'O';
             }
-            else if((coin === 'tails' && playerSelection === 'tails') || (playerSelection === 'tails' && coin ==='heads')) {
+            else if((coin === 'tails' && playerSelection === 'tails') || (coin ==='heads' && playerSelection === 'tails')) {
                 playerSelection = 'O';
                 computerSelection = 'X';
             }
             
             DOM.createMessage(`Player selection: ${playerSelection} \n Computer selection: ${computerSelection}`);
-            return {playerSelection, computerSelection}; 
+            this.cachedChoices = { playerSelection, computerSelection };
+            return this.cachedChoices;
         },
 
         humanComputerChoices: function(){
@@ -79,14 +74,8 @@
             }
     
             // Otherwise, compute and cache the choices
-            const choices = this.selection();
-            this.cachedChoices = choices;
-            console.log(choices);
-            console.table(Board.gameboardArray);
-            return choices;
+            return this.selection();
         },
-        // Human Player 
-        // Computer
     };
     
     const Game = {
@@ -122,7 +111,7 @@
             }
         },
     
-        pickTileHuman: function() {
+        pickTileHuman: function(event) {
             //User clicks on a tile on the gameboard
             //go through array until correct sub-array and position are chosen
             //if selected number has already not been chosen, change "-" to Human's choice
@@ -146,15 +135,15 @@
                 let checkWin = this.checkWin(Board.gameboardArray);
 
                 if (checkTie === false && checkWin === false){
-                    Game.gameTurn();
+                    this.gameTurn();
 
                 } else if (checkTie === true && checkWin === false) {
                     DOM.createMessage(`It's a tie! Nobody wins.`);
-                    this.restart;
+                    this.restart();
 
                 } else if (checkTie === false && checkWin === true){
                     DOM.createMessage(`Winner: ${playerChoice}`)
-                    this.restart;
+                    this.restart();
                 }
             }
 
@@ -363,41 +352,46 @@
             //when player picks heads or tails, the humanComputerChoices function runs
             //additionally the pressing the button causes the buttons to disappear 
 
-            const resetDiv = document.getElementById("reset");
+            const headsTails = document.getElementById("headsTails");
+            headsTails.innerHTML = '';
 
-            const headsButton = document.createElement("button");
+            const headsButton = document.createElement("input");
+            headsButton.type = 'Button'
             headsButton.value = "Heads";
             headsButton.id = "heads";
-            resetDiv.append(headsButton);
 
-            headsButton.addEventListener('click', () => {
+            headsTails.addEventListener('click', () => {
                 Players.selection("heads");
                 headsButton.remove();
                 tailsButton.remove();
+                DOM.updateBoard();
             });
             
 
 
-            const tailsButton = document.createElement("button");
+            const tailsButton = document.createElement("input");
+            tailsButton.type = 'button';
             tailsButton.value = "Tails";
             tailsButton.id = "tails";
-            resetDiv.append(tailsButton);
+            
 
             tailsButton.addEventListener('click', () => {
                 Players.selection("tails");
                 headsButton.remove();
                 tailsButton.remove();
+                DOM.updateBoard();
             });
 
+            headsTails.append(headsButton);
+            headsTails.append(tailsButton);
             
         },
     };
 
     Board.clear();
     Board.init();
-    DOM.headsTailsButtons();
-    // Players.humanComputerChoices();
     DOM.display();
+    DOM.headsTailsButtons();
 })()
 
 
