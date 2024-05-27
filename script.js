@@ -247,30 +247,14 @@
             return false;
         },
 
-        restart: function(defaultYes) {
-            let restart = defaultYes || Number(prompt(`Would you like to play again? \n 1: Yes \n 2: No`));
-            const regex = /^[1-2]$/;
-            let result = regex.test(restart);
+        restart: function() {
 
-            while (!result) {
-                restart = Number(prompt(`Would you like to play again? \n 1: Yes \n 2: No`));
-                result = regex.test(restart);
-            }
-
-            if(restart === 1) {
-                DOM.createMessage(`Ok! Game is restarting now!`)
-
+                // DOM.createMessage(`Ok! Game is restarting now!`);
                 Board.clear();
                 Board.init();
                 Players.cachedChoices = null; 
                 DOM.updateBoard();
-                Players.selection();
-                Players.humanComputerChoices();
-                
-
-            } else if (restart === 2){
-                DOM.createMessage(`Got it! Thanks for playing!`);
-            }
+                DOM.headsTailsButtons();
         },
     
     };

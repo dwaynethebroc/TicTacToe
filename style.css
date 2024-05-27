@@ -28,13 +28,12 @@
 }
 
 .reset {
-    width: 100px;
-    font-size: 20px;
+    font-size: 25px;
 }
 
 .annoucements {
     width: 200px;
-    font-size: 15px;
+    font-size: 25px;
 }
 
 .headsTails {
@@ -46,9 +45,9 @@
 }
 
 .heads {
-    font-size: 15px;
+    font-size: 25px;
 }
 
 .tails {
-    font-size: 15px;
+    font-size: 25px;
 }
