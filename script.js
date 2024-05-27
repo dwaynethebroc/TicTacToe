@@ -54,38 +54,21 @@
 
         cachedChoices: null,
 
-        selection: function() {
-            const regex = /^[1-2]$/;
-            let playerSelection = Number(prompt(`Select heads(1) or tails(2)`)); 
-            let result = regex.test(playerSelection);
-
-            while (!result){
-                playerSelection = Number(prompt(`Select heads(1) or tails(2)`));
-                result = regex.test(playerSelection);
-            }
-            
-            if (regex.test(playerSelection)){
-                if (playerSelection === 1) {
-                    console.log(`You have selected: Heads`);
-                }
-                else if (playerSelection === 2) {
-                    console.log(`You have selected: Tails`);
-                }
-            }
+        selection: function(playerSelection) {
             let computerSelection = '';
             let coin = Math.random() >= 0.5 ? 'heads' : 'tails';
 
     
-            if((coin === 'heads' && playerSelection === 1) || (playerSelection === 1 && coin === 'tails')) {
+            if((coin === 'heads' && playerSelection === 'heads') || (playerSelection === 'heads' && coin === 'tails')) {
                 playerSelection = 'X';
                 computerSelection = 'O';
             }
-            else if((coin === 'tails' && playerSelection === 2) || (playerSelection === 2 && coin ==='heads')) {
+            else if((coin === 'tails' && playerSelection === 'tails') || (playerSelection === 'tails' && coin ==='heads')) {
                 playerSelection = 'O';
                 computerSelection = 'X';
             }
             
-            DOM.createMessage(`Player selection: ${playerSelection} \n Computer selection: ${computerSelection}`)
+            DOM.createMessage(`Player selection: ${playerSelection} \n Computer selection: ${computerSelection}`);
             return {playerSelection, computerSelection}; 
         },
 
@@ -291,8 +274,10 @@
                 Board.clear();
                 Board.init();
                 Players.cachedChoices = null; 
+                DOM.updateBoard();
                 Players.selection();
                 Players.humanComputerChoices();
+                
 
             } else if (restart === 2){
                 DOM.createMessage(`Got it! Thanks for playing!`);
@@ -372,11 +357,46 @@
             DOM.updateBoard();
             console.table(Board.gameboardArray);
         },
+
+        headsTailsButtons: function(){
+            //make a heads and a tails button appear underneath the resest button
+            //when player picks heads or tails, the humanComputerChoices function runs
+            //additionally the pressing the button causes the buttons to disappear 
+
+            const resetDiv = document.getElementById("reset");
+
+            const headsButton = document.createElement("button");
+            headsButton.value = "Heads";
+            headsButton.id = "heads";
+            resetDiv.append(headsButton);
+
+            headsButton.addEventListener('click', () => {
+                Players.selection("heads");
+                headsButton.remove();
+                tailsButton.remove();
+            });
+            
+
+
+            const tailsButton = document.createElement("button");
+            tailsButton.value = "Tails";
+            tailsButton.id = "tails";
+            resetDiv.append(tailsButton);
+
+            tailsButton.addEventListener('click', () => {
+                Players.selection("tails");
+                headsButton.remove();
+                tailsButton.remove();
+            });
+
+            
+        },
     };
 
     Board.clear();
     Board.init();
-    Players.humanComputerChoices();
+    DOM.headsTailsButtons();
+    // Players.humanComputerChoices();
     DOM.display();
 })()
 
