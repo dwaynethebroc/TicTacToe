@@ -362,21 +362,13 @@
             headsButton.value = "Heads";
             headsButton.id = "heads";
 
-            headsTails.addEventListener('click', () => {
-                if (!Players.cachedChoices) {
-                    Players.selection("heads");
-                    headsButton.remove();
-                    tailsButton.remove();
-                    DOM.updateBoard();
-                }
+            headsButton.addEventListener('click', () => {
 
-                else {
-                    Players.cachedChoices = null;
                     Players.selection("heads");
                     headsButton.remove();
                     tailsButton.remove();
                     DOM.updateBoard();
-                }
+                
             });
             
 
@@ -389,20 +381,10 @@
 
             tailsButton.addEventListener('click', () => {
 
-                if (!Players.cachedChoices) {
                     Players.selection("tails");
                     headsButton.remove();
                     tailsButton.remove();
                     DOM.updateBoard();
-                }
-
-                else {
-                    Players.cachedChoices = null;
-                    Players.selection("tails");
-                    headsButton.remove();
-                    tailsButton.remove();
-                    DOM.updateBoard();
-                }
 
                 //when tile is selected before heads/tails chosen, message displays, but subsequent clicks do not select heads or tails
             });
