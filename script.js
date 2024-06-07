@@ -313,6 +313,34 @@
             }
         },
 
+        addName: function(){
+            const nameDiv = document.getElementById('names');
+
+            const nameBar = document.createElement('input');
+
+            nameBar.type = 'text';
+            nameBar.id = 'textInput';
+            nameBar.placeholder = `Enter your name here`;
+
+            const submitButton = document.createElement('input');
+            submitButton.type = 'button';
+            submitButton.id = 'textSubmit';
+            submitButton.value = "Submit";
+
+            const playerName = document.createElement('div');
+            playerName.id = 'playerName';
+
+            submitButton.addEventListener('click', () => {
+                playerName.innerHTML = `Player Name: ${nameBar.value}`
+                submitButton.remove();
+                nameBar.remove();
+            });
+
+            nameDiv.append(nameBar);
+            nameDiv.append(submitButton);
+            nameDiv.append(playerName);
+        },
+
         updateBoard: function() {
 
             let boardDiv = document.getElementById('board');
@@ -399,6 +427,5 @@
     Board.init();
     DOM.display();
     DOM.headsTailsButtons();
+    DOM.addName();
 })()
-
-
