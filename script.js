@@ -128,23 +128,39 @@
             console.table(Board.gameboardArray);
 
             if(Board.gameboardArray[row][col] === '-') {
-                DOM.changeTileHuman(row, col);
-                DOM.updateBoard();
 
-                let checkTie = this.checkTie();
-                let checkWin = this.checkWin(Board.gameboardArray);
+                //if human has not made selection, change message to "First select heads or tails"
 
-                if (checkTie === false && checkWin === false){
-                    this.gameTurn();
-
-                } else if (checkTie === true && checkWin === false) {
-                    DOM.createMessage(`It's a tie! Nobody wins.`);
-                    this.restart();
-
-                } else if (checkTie === false && checkWin === true){
-                    DOM.createMessage(`Winner: ${playerChoice}`)
-                    this.restart();
+                if(choices.playerSelection === undefined) {
+                    DOM.createMessage(`First select heads or tails`);
                 }
+
+                else {
+                    //needs to be outside of the condition of if tile is empty, 
+                    DOM.changeTileHuman(row, col);
+                    DOM.updateBoard();
+
+                    let checkTie = this.checkTie();
+                    let checkWin = this.checkWin(Board.gameboardArray);
+
+                    if (checkTie === false && checkWin === false){
+                        this.gameTurn();
+
+                    } else if (checkTie === true && checkWin === false) {
+                        DOM.createMessage(`It's a tie! Nobody wins.`);
+                        this.restart();
+
+                    } else if (checkTie === false && checkWin === true){
+                        DOM.createMessage(`Winner: ${playerChoice}`)
+                        this.restart();
+                    }
+                    
+                    else if (checkTie === true && checkWin === true){
+                        DOM.createMessage(`Winner: ${playerChoice}`)
+                        this.restart();
+                    }
+                }
+                
             }
 
             else {
@@ -187,6 +203,8 @@
                     break;
                 }
             } while(true);
+
+            counter = 0;
 
             if (this.checkWin(Board.gameboardArray)) {
                 // DOM.createMessage(`Winner: ${computerChoice}`);
@@ -345,10 +363,20 @@
             headsButton.id = "heads";
 
             headsTails.addEventListener('click', () => {
-                Players.selection("heads");
-                headsButton.remove();
-                tailsButton.remove();
-                DOM.updateBoard();
+                if (!Players.cachedChoices) {
+                    Players.selection("heads");
+                    headsButton.remove();
+                    tailsButton.remove();
+                    DOM.updateBoard();
+                }
+
+                else {
+                    Players.cachedChoices = null;
+                    Players.selection("heads");
+                    headsButton.remove();
+                    tailsButton.remove();
+                    DOM.updateBoard();
+                }
             });
             
 
@@ -360,10 +388,23 @@
             
 
             tailsButton.addEventListener('click', () => {
-                Players.selection("tails");
-                headsButton.remove();
-                tailsButton.remove();
-                DOM.updateBoard();
+
+                if (!Players.cachedChoices) {
+                    Players.selection("tails");
+                    headsButton.remove();
+                    tailsButton.remove();
+                    DOM.updateBoard();
+                }
+
+                else {
+                    Players.cachedChoices = null;
+                    Players.selection("tails");
+                    headsButton.remove();
+                    tailsButton.remove();
+                    DOM.updateBoard();
+                }
+
+                //when tile is selected before heads/tails chosen, message displays, but subsequent clicks do not select heads or tails
             });
 
             headsTails.append(headsButton);

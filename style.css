@@ -38,16 +38,11 @@
 
 .headsTails {
     display: flex;
-    flex-direction: column;
-    height: 200px;
-    font-size: 50px;
     gap: 20px;
 }
 
-.heads {
-    font-size: 25px;
-}
 
-.tails {
-    font-size: 25px;
+input {
+    width: 200px;
+    height: 100px; 
 }
