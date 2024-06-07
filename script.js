@@ -35,7 +35,10 @@
     
         //clear board function
         clear: function() {
-    
+            
+            const nameDiv = document.getElementById('names');
+            nameDiv.innerHTML = '';
+
             this.gameboardArray = [];
             this.index = 0;
             console.table(this.gameboardArray);
@@ -267,12 +270,13 @@
 
         restart: function() {
 
-                // DOM.createMessage(`Ok! Game is restarting now!`);
+                // DOM.createMessage(`Ok! Game is restarting now!`)
                 Board.clear();
                 Board.init();
                 Players.cachedChoices = null; 
                 DOM.updateBoard();
                 DOM.headsTailsButtons();
+                DOM.addName();
         },
     
     };
