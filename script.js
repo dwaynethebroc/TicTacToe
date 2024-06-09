@@ -177,6 +177,7 @@
             //go through array until correct sub-array and position are chosen
             //if selected number has already not been chosen, change "-" to computer's player
             //else run program again until unselected tile has been chosen
+            
             console.table(Board.gameboardArray);
             let computerTile;
             let counter = 0; 
@@ -199,15 +200,14 @@
                     break;
                 }
 
-                counter++;
-
-                if(counter >= 9){
+                else if(counter >= 9){
                     console.log("Board is full. No empty tiles available");
                     break;
                 }
+
+                counter++;
             } while(true);
 
-            counter = 0;
 
             if (this.checkWin(Board.gameboardArray)) {
                 // DOM.createMessage(`Winner: ${computerChoice}`);
@@ -216,6 +216,9 @@
                 DOM.createMessage(`It's a tie! Nobody wins.`);
                 this.restart;
             }
+            
+            
+            
         },
 
         checkTie: function() {
